@@ -1,7 +1,12 @@
-const router = require('express').Router();
-const createArtist = require('./artist/create');
-const { validateCreateArtist, normalizeArtistData } = require('../../middleware/artist');
+const express = require('express');
+const router = express.Router();
 
-router.post('/artist/create', validateCreateArtist, normalizeArtistData, createArtist);
+const artistRouter = require('./artist');
+const albumRouter = require('./album');
+const songRouter = require('./song');
+
+router.use('/artists', artistRouter);
+router.use('/albums', albumRouter);
+router.use('/songs', songRouter);
 
 module.exports = router;

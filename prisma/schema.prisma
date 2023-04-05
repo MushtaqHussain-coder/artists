@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-   provider = "mysql"
-   url      = "mysql://root:root@localhost:3306/node_app
+  provider = "mysql"
+  url      = "mysql://root:root@localhost:3306/artists"
+}
 
 model Artist {
   id              Int           @id @default(autoincrement())
@@ -16,22 +17,24 @@ model Artist {
   gender          Int
   country         Int
   careerStartYear Int
-  Albums          ArtistAlbum[]
+  albums          Album[]
 }
 
 model Album {
-  id      Int           @id @default(autoincrement())
-  name    String        @db.VarChar(255)
-  Artists ArtistAlbum[]
+  id        Int      @id @default(autoincrement())
+  title     String
+  year      Int
+  artist    Artist   @relation(fields: [artistId], references: [id])
+  artistId  Int
+  songs     Song[]
 }
 
-model ArtistAlbum {
-  artist   Artist @relation(fields: [artistId], references: [id])
-  artistId Int
-  album    Album  @relation(fields: [albumId], references: [id])
-  albumId  Int
-
-  @@unique([artistId, albumId])
+model Song {
+  id        Int      @id @default(autoincrement())
+  title     String
+  length    Int
+  album     Album    @relation(fields: [albumId], references: [id])
+  albumId   Int
 }
 
 model User {
