@@ -1,18 +1,20 @@
 const express = require('express');
+const cors = require('cors');
+const apiRouter = require('./routes/api');
+const response = require('./lib/response');
 const app = express();
 const port = 3000;
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 app.use(cors());
 
-// enable CORS
 app.use('/api', apiRouter);
 
 // error handler
 app.use((err, req, res, next) => {
-  const resp = {};
+  const resp = response();
   resp.success = false;
 
   console.error(err);
@@ -27,16 +29,14 @@ app.use((err, req, res, next) => {
   res.status(500).json(resp);
 });
 
-
 // catch 404
 app.use((req, res, next) => {
-    next();
-    const resp = {};
-    resp.success = false;
-    resp.message = 'Route not found!';
-  
-    res.status(404).json(resp);
-  });
+  const resp = response();
+  resp.success = false;
+  resp.message = 'Route not found!';
+
+  res.status(404).json(resp);
+});
 
 app.listen(port, () => {
   console.log(`Node App is listening on ${port}`);

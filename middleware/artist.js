@@ -1,7 +1,9 @@
 const { schema: artistSchema } = require('../lib/validators/artist-create-schema');
+const { getGenderId, genderOptions } = require('../lib/helpers/gender');
+const response = require('../lib/response');
 
 async function validateCreateArtist(req, res, next) {
-  const resp = {};
+  const resp = response();
 
   const { error } = artistSchema.validate(req.body, { allowUnknown: true });
 
@@ -16,19 +18,16 @@ async function validateCreateArtist(req, res, next) {
 }
 
 async function normalizeArtistData(req, res, next) {
-  const normalizedData = [];
   const { name, nickName, gender, country, careerStartYear } = req.body;
   const record = {
     name,
-    nick_name: nickName,
-    gender,
+    nickName,
+    gender: getGenderId(gender, genderOptions),
     country,
-    career_start_year: careerStartYear,
+    careerStartYear,
   };
 
-  normalizedData.push(record);
-
-  req.body = record;
+  req.body.normalizedData = record;
 
   next();
 }
@@ -36,4 +35,4 @@ async function normalizeArtistData(req, res, next) {
 module.exports = {
   validateCreateArtist,
   normalizeArtistData,
-}
+};
