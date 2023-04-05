@@ -1,18 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const apiRouter = require('./routes/api');
+const authRouter = require('./middleware/auth');
 const response = require('./lib/response');
 const app = express();
 const port = 3000;
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use('/api', apiRouter);
+app.use('/auth', authRouter); // Add this line
 
-// error handler
 app.use((err, req, res, next) => {
   const resp = response();
   resp.success = false;
@@ -29,7 +29,6 @@ app.use((err, req, res, next) => {
   res.status(500).json(resp);
 });
 
-// catch 404
 app.use((req, res, next) => {
   const resp = response();
   resp.success = false;
